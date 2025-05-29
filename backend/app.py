@@ -65,7 +65,7 @@ class SydneyEventsAPI:
         self.cache_duration = 3600  # 1 hour cache
 
 
-        def setup_selenium_driver(self):
+    def setup_selenium_driver(self):
         """Enhanced driver setup with anti-detection"""
         chrome_options = Options()
         chrome_options.add_argument('--headless')
