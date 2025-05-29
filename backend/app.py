@@ -15,6 +15,8 @@ from flask_cors import CORS
 import threading
 import os
 
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 # Flask App Setup
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -62,18 +64,20 @@ class SydneyEventsAPI:
         self.cache_timestamp = None
         self.cache_duration = 3600  # 1 hour cache
 
+
     def setup_selenium_driver(self):
-        """Setup headless Chrome driver"""
+        """Setup Chrome driver with automatic management"""
         chrome_options = Options()
         chrome_options.add_argument('--headless')
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--disable-dev-shm-usage')
-        chrome_options.add_argument('--window-size=1920,1080')
-        chrome_options.add_argument('--disable-logging')
-        chrome_options.add_argument('--log-level=3')
         chrome_options.add_argument('--disable-gpu')
-        chrome_options.add_argument('--disable-extensions')
-        return webdriver.Chrome(options=chrome_options)
+        chrome_options.add_argument('--window-size=1920,1080')
+        
+        # Use WebDriver Manager for automatic driver installation
+        service = Service(ChromeDriverManager().install())
+        return webdriver.Chrome(service=service, options=chrome_options)
+
 
     def is_cache_valid(self):
         """Check if cache is still valid"""
